@@ -1,35 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>Attendance Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="../static/style.css" />
-    <style>
-      body {
-        font-family: Arial;
-        padding: 20px;
-      }
-      table,
-      th,
-      td {
-        border: 1px solid black;
-        border-collapse: collapse;
-        padding: 8px;
-      }
-      th,
-      td {
-        text-align: left;
-      }
-    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
   </head>
   <body>
+    <button class="toggle-btn" onclick="toggleTheme()">
+      <i class="fas fa-moon"></i> Toggle Theme
+    </button>
+
     <h2>Manual Attendance</h2>
-    <form id="manualForm" method="POST" action="/submit_manual">
+    <form
+      id="manualForm"
+      method="POST"
+      action="/submit_manual"
+      class="card"
+      onsubmit="showToast('Manual attendance submitted!')"
+    >
       <table id="manualTable">
         <thead>
           <tr>
             <th>Name</th>
             <th>Status</th>
-            <th><button type="button" onclick="addRow()">+</button></th>
+            <th>
+              <button type="button" class="icon-btn" onclick="addRow()">
+                <i class="fas fa-plus"></i>
+              </button>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -41,7 +43,15 @@
                 <option value="Absent">Absent</option>
               </select>
             </td>
-            <td><button type="button" onclick="removeRow(this)">x</button></td>
+            <td>
+              <button
+                type="button"
+                class="icon-btn delete-btn"
+                onclick="removeRow(this)"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -53,52 +63,68 @@
     </form>
 
     <h2>Upload Attendance Sheet (Image)</h2>
-    <form action="/upload_image" method="POST" enctype="multipart/form-data">
+    <form
+      action="/upload_image"
+      method="POST"
+      enctype="multipart/form-data"
+      class="card"
+      onsubmit="showToast('Image uploaded for processing!')"
+    >
       <input type="file" name="image" required />
-      <button type="submit">Upload and Process</button>
+      <br /><br />
+      <button type="submit">
+        <i class="fas fa-upload"></i> Upload and Process
+      </button>
     </form>
 
     <h2>Current Attendance</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Status</th>
-          <th>Date</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for entry in attendance %}
-        <tr>
-          <td>{{ entry['Name'] }}</td>
-          <td>{{ entry['Status'] }}</td>
-          <td>{{ entry['Date'] }}</td>
-          <td>
-            <form
-              action="/delete_attendance"
-              method="POST"
-              style="display: inline"
-            >
-              <input type="hidden" name="name" value="{{ entry['Name'] }}" />
-              <input type="hidden" name="date" value="{{ entry['Date'] }}" />
-              <button
-                type="submit"
-                onclick="return confirm('Delete this entry?')"
-              >
-                Delete
-              </button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-
-    <br />
-    <form action="/download" method="GET">
-      <button type="submit">Download Excel</button>
+    <form action="/download" method="GET" class="card">
+      <button type="submit" onclick="showToast('Downloading Excel...')">
+        <i class="fas fa-download"></i> Download Excel
+      </button>
     </form>
+
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in attendance %}
+          <tr>
+            <td>{{ entry['Name'] }}</td>
+            <td>{{ entry['Status'] }}</td>
+            <td>{{ entry['Date'] }}</td>
+            <td>
+              <form
+                action="/delete_attendance"
+                method="POST"
+                style="display: inline"
+                onsubmit="showToast('Entry deleted!')"
+              >
+                <input type="hidden" name="name" value="{{ entry['Name'] }}" />
+                <input type="hidden" name="date" value="{{ entry['Date'] }}" />
+                <button
+                  type="submit"
+                  class="delete-btn"
+                  onclick="return confirm('Delete this entry?')"
+                >
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div id="toast" class="toast">Toast Message</div>
 
     <script>
       function addRow() {
@@ -106,20 +132,59 @@
           .getElementById("manualTable")
           .getElementsByTagName("tbody")[0];
         const newRow = table.insertRow();
+        newRow.classList.add("animate-row");
+
         newRow.innerHTML = `
-                <td><input type="text" name="name"></td>
-                <td>
-                    <select name="status">
-                        <option value="Present">Present</option>
-                        <option value="Absent">Absent</option>
-                    </select>
-                </td>
-                <td><button type="button" onclick="removeRow(this)">x</button></td>
-            `;
+          <td><input type="text" name="name"></td>
+          <td>
+              <select name="status">
+                  <option value="Present">Present</option>
+                  <option value="Absent">Absent</option>
+              </select>
+          </td>
+          <td>
+              <button type="button" class="icon-btn delete-btn" onclick="removeRow(this)">
+                  <i class="fas fa-times"></i>
+              </button>
+          </td>`;
       }
 
       function removeRow(button) {
         button.parentElement.parentElement.remove();
+      }
+      // On page load: check if theme was saved
+      window.onload = function () {
+        const savedTheme = localStorage.getItem("theme") || "light";
+        document.body.setAttribute("data-theme", savedTheme);
+        updateToggleIcon(savedTheme);
+      };
+
+      function toggleTheme() {
+        const current = document.body.getAttribute("data-theme");
+        const newTheme = current === "light" ? "dark" : "light";
+        document.body.setAttribute("data-theme", newTheme);
+        localStorage.setItem("theme", newTheme);
+        updateToggleIcon(newTheme);
+      }
+
+      function updateToggleIcon(theme) {
+        const icon = document.querySelector(".toggle-btn i");
+        if (theme === "dark") {
+          icon.classList.remove("fa-moon");
+          icon.classList.add("fa-sun");
+        } else {
+          icon.classList.remove("fa-sun");
+          icon.classList.add("fa-moon");
+        }
+      }
+
+      function showToast(message) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 3000);
       }
     </script>
   </body>
