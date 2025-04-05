@@ -1,0 +1,166 @@
+body {
+  font-family: "Poppins", sans-serif;
+  background: #f9fbfd;
+  padding: 40px;
+  color: #2c3e50;
+  margin: 0;
+}
+
+h2 {
+  color: #34495e;
+  font-size: 2rem;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+  margin-top: 40px;
+}
+
+form {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  margin-bottom: 50px;
+  transition: 0.3s ease all;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  overflow: hidden;
+  border-radius: 12px;
+  table-layout: auto;
+  word-wrap: break-word;
+}
+
+th,
+td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid #ecf0f1;
+  font-size: 0.95rem;
+  vertical-align: middle;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+th {
+  background-color: #3498db;
+  color: white;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+tr:hover {
+  background-color: #f2f6fa;
+}
+
+input[type="text"],
+select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  border: 1px solid #bdc3c7;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  background-color: #fdfefe;
+  transition: 0.3s border;
+}
+
+input[type="date"] {
+  width: 60%;
+  padding: 10px 12px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  border: 1px solid #bdc3c7;
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  background-color: #fdfefe;
+  transition: 0.3s border;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+button,
+input[type="submit"] {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  background-color: #2980b9;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  padding: 10px 14px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+.inline-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.actions-cell {
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 20px;
+  }
+
+  table,
+  th,
+  td {
+    font-size: 0.85rem;
+  }
+
+  input[type="text"],
+  input[type="date"],
+  select,
+  button {
+    font-size: 0.85rem;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+  }
+}

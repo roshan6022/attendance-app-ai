@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Attendance Tracker</title>
+    <link rel="stylesheet" href="../static/style.css" />
+    <style>
+      body {
+        font-family: Arial;
+        padding: 20px;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        padding: 8px;
+      }
+      th,
+      td {
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Manual Attendance</h2>
+    <form id="manualForm" method="POST" action="/submit_manual">
+      <table id="manualTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th><button type="button" onclick="addRow()">+</button></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="text" name="name" /></td>
+            <td>
+              <select name="status">
+                <option value="Present">Present</option>
+                <option value="Absent">Absent</option>
+              </select>
+            </td>
+            <td><button type="button" onclick="removeRow(this)">x</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <br />
+      <label for="manual_date">Date:</label>
+      <input type="date" name="manual_date" required />
+      <br /><br />
+      <input type="submit" value="Submit Attendance" />
+    </form>
+
+    <h2>Upload Attendance Sheet (Image)</h2>
+    <form action="/upload_image" method="POST" enctype="multipart/form-data">
+      <input type="file" name="image" required />
+      <button type="submit">Upload and Process</button>
+    </form>
+
+    <h2>Current Attendance</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in attendance %}
+        <tr>
+          <td>{{ entry['Name'] }}</td>
+          <td>{{ entry['Status'] }}</td>
+          <td>{{ entry['Date'] }}</td>
+          <td>
+            <form
+              action="/delete_attendance"
+              method="POST"
+              style="display: inline"
+            >
+              <input type="hidden" name="name" value="{{ entry['Name'] }}" />
+              <input type="hidden" name="date" value="{{ entry['Date'] }}" />
+              <button
+                type="submit"
+                onclick="return confirm('Delete this entry?')"
+              >
+                Delete
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <br />
+    <form action="/download" method="GET">
+      <button type="submit">Download Excel</button>
+    </form>
+
+    <script>
+      function addRow() {
+        const table = document
+          .getElementById("manualTable")
+          .getElementsByTagName("tbody")[0];
+        const newRow = table.insertRow();
+        newRow.innerHTML = `
+                <td><input type="text" name="name"></td>
+                <td>
+                    <select name="status">
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                    </select>
+                </td>
+                <td><button type="button" onclick="removeRow(this)">x</button></td>
+            `;
+      }
+
+      function removeRow(button) {
+        button.parentElement.parentElement.remove();
+      }
+    </script>
+  </body>
+</html>
